@@ -9,11 +9,31 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    enemigo.cpp \
+    flecha.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    nivel.cpp \
+    nivel1view.cpp \
+    nivel2view.cpp \
+    pared.cpp \
+    personaje.cpp \
+    protagonista.cpp \
+    trampa.cpp \
+    trampafija.cpp
 
 HEADERS += \
-    mainwindow.h
+    enemigo.h \
+    flecha.h \
+    mainwindow.h \
+    nivel.h \
+    nivel1view.h \
+    nivel2view.h \
+    pared.h \
+    personaje.h \
+    protagonista.h \
+    trampa.h \
+    trampafija.h
 
 FORMS += \
     mainwindow.ui
