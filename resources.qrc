@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imagenes/corazon.png</file>
+        <file>imagenes/Flecha_trampa.png</file>
+        <file>imagenes/Fondo_nivel1.png</file>
+        <file>imagenes/kamehameha1.png</file>
+        <file>imagenes/pared.png</file>
+        <file>imagenes/Sprites_Goku.png</file>
+        <file>imagenes/Trampas_fijas.png</file>
+    </qresource>
+</RCC>
