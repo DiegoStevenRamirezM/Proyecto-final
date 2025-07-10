@@ -206,3 +206,80 @@ void Protagonista::mostrarMuerte()
 void Protagonista::permitirAvanceCompleto(bool valor) {
     limiteDerechoActivo = valor;
 }
+
+void Protagonista::lanzarKamehameha() {
+    QGraphicsPixmapItem* rayo = new QGraphicsPixmapItem();
+
+    int direccionRayo = direccionSalto;
+    int yOffset = 20;
+    int xOffset = (direccionRayo == -1) ? -100 : 50;
+    rayo->setPos(x() + xOffset, y() + yOffset);
+    rayo->setZValue(2);
+
+    QPixmap frame = spriteKamehameha.copy(0, 0, 200, 42);
+    if (direccionRayo == -1)
+        frame = frame.transformed(QTransform().scale(-1, 1));
+    rayo->setPixmap(frame);
+
+    scene()->addItem(rayo);
+
+    QTimer* timerRayo = new QTimer(this);
+    connect(timerRayo, &QTimer::timeout, this, [=]() {
+        int dx = direccionRayo * 15;  // ya no cambia aunque Goku se mueva
+        rayo->moveBy(dx, 0);
+
+        QList<QGraphicsItem*> colisiones = rayo->collidingItems();
+        for (auto* item : colisiones) {
+            if (dynamic_cast<Pared*>(item)) {
+                static_cast<Pared*>(item)->recibirImpacto();
+                scene()->removeItem(rayo);
+                delete rayo;
+                timerRayo->stop();
+                timerRayo->deleteLater();
+                return;
+            }
+        }
+
+        if (rayo->x() < 0 || rayo->x() > 1600) {
+            scene()->removeItem(rayo);
+            delete rayo;
+            timerRayo->stop();
+            timerRayo->deleteLater();
+        }
+    });
+
+    timerRayo->start(80);
+}
+
+void Protagonista::animarKamehameha() {
+    timer->stop(); // Detener animación normal
+
+    int fila = 10;
+    int totalFrames = 12;
+    int duracionFrame = 70;  // más rápido para que el rayo no se retrase
+    int ancho = 40;
+    int alto = 40;
+
+    QTimer* animTimer = new QTimer(this);
+    int* frameIndex = new int(0);
+
+    connect(animTimer, &QTimer::timeout, this, [=]() {
+        if (*frameIndex >= totalFrames) {
+            animTimer->stop();
+            delete frameIndex;
+            animTimer->deleteLater();
+            timer->start(120);
+            lanzarKamehameha();  // sale justo al terminar
+            return;
+        }
+        int x = (*frameIndex) * ancho;
+        QPixmap frame = hojaSprite.copy(x, fila * alto, ancho, alto);
+        if (direccionSalto == -1)
+            frame = frame.transformed(QTransform().scale(-1, 1));
+
+        setPixmap(frame.scaled(96, 96, Qt::KeepAspectRatio));
+        (*frameIndex)++;
+    });
+
+    animTimer->start(duracionFrame);
+}
