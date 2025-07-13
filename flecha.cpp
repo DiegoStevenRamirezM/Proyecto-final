@@ -3,7 +3,7 @@
 #include <QtMath>
 #include <QTransform>
 
-Flecha::Flecha(bool haciaDerecha, QGraphicsItem* parent) : Trampa(1)
+Flecha::Flecha(bool haciaDerecha, QGraphicsItem* parent) : Trampa(8)
 {
     direccion = haciaDerecha;
     velocidad = 5;

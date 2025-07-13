@@ -181,11 +181,11 @@ void Nivel1View::verificarColisiones()
             if (!trampasEnContacto.contains(trampa)) {
                 trampasEnContacto.insert(trampa);
 
-                goku->recibirDanio(10);
+                goku->recibirDanio(trampa->getDanio());
                 actualizarBarraVida();
 
                 trampa->iniciarDanioContinuo(this, [=]() {
-                    goku->recibirDanio(10);
+                    goku->recibirDanio(trampa->getDanio());
                     actualizarBarraVida();
 
                     if (goku->getVida() <= 0) {

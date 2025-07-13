@@ -1,8 +1,8 @@
 #include "trampafija.h"
 #include <QTimer>
-#include <QDebug>
 
-TrampaFija::TrampaFija(const QString& tipo) : Trampa(1)
+
+TrampaFija::TrampaFija(const QString& tipo) : Trampa(6)
 {
     spriteSheet.load(":/imagenes/Trampas_fijas.png");
 
