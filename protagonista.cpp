@@ -54,7 +54,7 @@ void Protagonista::siguienteFrame() {
 
 void Protagonista::mostrarAnimacionDanio()
 {
-    estaOcupado = true;  // Esto es para bloquear cualquier otra animación o acción
+    estaOcupado = true;  // Esto es para bloquear cualquier otra animacion o accion
     timer->stop();       // Detener animación normal
 
     int fila = 13;
@@ -72,7 +72,7 @@ void Protagonista::mostrarAnimacionDanio()
             delete frameIndex;
             animTimer->deleteLater();
 
-            estaOcupado = false;     // Ahora sí puede volver a moverse o atacar
+            estaOcupado = false;     // Ahora si puede volver a moverse o atacar
             timer->start(120);       // volver a animación normal
             return;
         }
@@ -282,4 +282,232 @@ void Protagonista::animarKamehameha() {
     });
 
     animTimer->start(duracionFrame);
+}
+
+void Protagonista::setEnemigo(Enemigo* enemigo)
+{
+    enemigoActual = enemigo;
+}
+
+void Protagonista::curarse()
+{
+    if (estaOcupado) return;
+    estaOcupado = true;
+
+    int frames = 4;
+    int fila = 5;
+    int duracion = 100;
+
+    timer->stop();
+    frameActual = 0;
+
+    QPointF posicionInicial = this->pos();
+    QPixmap spriteOriginal = hojaSprite.copy(0, 0 * altoFrame, anchoFrame, altoFrame);
+
+    QTimer* animador = new QTimer();
+    connect(animador, &QTimer::timeout, [=]() mutable {
+        if (frameActual < frames) {
+            int x = frameActual * anchoFrame;
+            int y = fila * altoFrame;
+
+            int factor = 3;
+            QPixmap cuadro = hojaSprite.copy(x, y, anchoFrame, altoFrame);
+            QPixmap escalado = cuadro.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(escalado);
+            setPos(posicionInicial.x() + 20, posicionInicial.y() - 25);
+
+            frameActual++;
+        } else {
+            animador->stop();
+            delete animador;
+
+            int factor = 3;
+            QPixmap restaurado = spriteOriginal.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(restaurado);
+            setPos(posicionInicial);
+
+            // ✅ Solo se cura una vez
+            vida += 8;
+            if (vida > 100) vida = 100;
+
+            estaOcupado = false;
+        }
+    });
+
+    animador->start(duracion);
+}
+
+// PUÑO - fila 7, 7 frames
+void Protagonista::animarPunio()
+{
+    if (estaOcupado) return;
+    estaOcupado = true;
+
+    int frames = 6;
+    int fila = 7;
+    int duracion = 100;
+
+    timer->stop();
+    frameActual = 0;
+    bool golpeado = false;  // solo una colisión
+
+    QPointF posicionInicial = this->pos();
+    QPixmap spriteOriginal = hojaSprite.copy(0, 0 * altoFrame, anchoFrame, altoFrame);
+
+    QTimer* animador = new QTimer();
+    connect(animador, &QTimer::timeout, [=]() mutable {
+        if (frameActual < frames) {
+            int x = frameActual * anchoFrame;
+            int y = fila * altoFrame;
+
+            int factor = 3;
+            QPixmap cuadro = hojaSprite.copy(x, y, anchoFrame, altoFrame);
+            QPixmap escalado = cuadro.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(escalado);
+            setPos(posicionInicial.x() + 20, posicionInicial.y() - 25);
+
+            frameActual++;
+
+            if (!golpeado && enemigoActual && this->collidesWithItem(enemigoActual)) {
+                enemigoActual->recibirDanio(2);
+                golpeado = true;
+            }
+        } else {
+            animador->stop();
+            delete animador;
+
+            int factor = 3;
+            QPixmap restaurado = spriteOriginal.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(restaurado);
+            setPos(posicionInicial);
+
+            estaOcupado = false;
+        }
+    });
+
+    animador->start(duracion);
+}
+
+// PATADA - fila 17, 12 frames
+void Protagonista::animarPatada()
+{
+    if (estaOcupado) return;
+    estaOcupado = true;
+
+    int frames = 12;
+    int fila = 17;
+    int duracion = 45;
+
+    timer->stop();
+    frameActual = 0;
+    bool golpeado = false;  // solo una colisión
+
+    QPointF posicionInicial = this->pos();
+    QPixmap spriteOriginal = hojaSprite.copy(0, 0 * altoFrame, anchoFrame, altoFrame);
+
+    QTimer* animador = new QTimer();
+    connect(animador, &QTimer::timeout, [=]() mutable {
+        if (frameActual < frames) {
+            int x = frameActual * anchoFrame;
+            int y = fila * altoFrame;
+
+            int factor = 3;
+            QPixmap cuadro = hojaSprite.copy(x, y, anchoFrame, altoFrame);
+            QPixmap escalado = cuadro.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(escalado);
+            setPos(posicionInicial.x() + 20, posicionInicial.y() - 25);
+
+            frameActual++;
+
+            if (!golpeado && enemigoActual && this->collidesWithItem(enemigoActual)) {
+                enemigoActual->recibirDanio(3);
+                golpeado = true;
+            }
+        } else {
+            animador->stop();
+            delete animador;
+
+            int factor = 3;
+            QPixmap restaurado = spriteOriginal.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(restaurado);
+            setPos(posicionInicial);
+
+            estaOcupado = false;
+        }
+    });
+
+    animador->start(duracion);
+}
+
+// BOLA DE ENERGÍA - fila 2, 3 frames + ataque
+void Protagonista::animarBolaEnergia()
+{
+    if (estaOcupado) return;
+    estaOcupado = true;
+
+    int frames = 3;
+    int fila = 1;
+    int duracion = 100;
+
+    timer->stop();
+    frameActual = 0;
+
+    QPointF posicionInicial = this->pos();
+    QPixmap spriteOriginal = hojaSprite.copy(0, 0 * altoFrame, anchoFrame, altoFrame);
+
+    QTimer* animador = new QTimer();
+    connect(animador, &QTimer::timeout, [=]() mutable {
+        if (frameActual < frames) {
+            int x = frameActual * anchoFrame;
+            int y = fila * altoFrame;
+
+            int factor = 3;
+            QPixmap cuadro = hojaSprite.copy(x, y, anchoFrame, altoFrame);
+            QPixmap escalado = cuadro.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(escalado);
+            setPos(posicionInicial.x() + 20, posicionInicial.y() - 25);
+
+            frameActual++;
+        } else {
+            animador->stop();
+            delete animador;
+
+            // Crear bola de energía
+            QGraphicsEllipseItem* bola = new QGraphicsEllipseItem(0, 0, 30, 30);
+            bola->setBrush(Qt::blue);
+            bola->setPen(Qt::NoPen);
+            bola->setPos(this->x() + 100, this->y() + 30);
+            scene()->addItem(bola);
+
+            QTimer* mover = new QTimer();
+            connect(mover, &QTimer::timeout, [=]() mutable {
+                bola->moveBy(7, 0);
+
+                if (enemigoActual && bola->collidesWithItem(enemigoActual)) {
+                    enemigoActual->recibirDanio(4);
+                    scene()->removeItem(bola);
+                    delete bola;
+                    mover->stop();
+                    delete mover;
+                }
+
+                if (bola->x() > scene()->width()) {
+                    scene()->removeItem(bola);
+                    delete bola;
+                    mover->stop();
+                    delete mover;
+                }
+            });
+            mover->start(20);
+
+            // Restaurar sprite
+            int factor = 3;
+            QPixmap restaurado = spriteOriginal.scaled(anchoFrame * factor, altoFrame * factor);
+            setPixmap(restaurado);
+            setPos(posicionInicial);
+            estaOcupado = false;
+        }
+    });
+
+    animador->start(duracion);
 }
