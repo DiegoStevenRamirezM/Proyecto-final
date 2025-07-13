@@ -2,12 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
+#include <QPushButton>
+#include <QWidget>
+#include <QLabel>
+#include <QVBoxLayout>
+#include "nivel1view.h"
+#include "nivel2view.h"
 
 class MainWindow : public QMainWindow
 {
@@ -17,7 +17,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void iniciarNivel1();
+    void iniciarNivel2();
+
 private:
-    Ui::MainWindow *ui;
+    QWidget *menuWidget;
 };
+
 #endif // MAINWINDOW_H
