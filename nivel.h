@@ -21,6 +21,7 @@ public:
     void actualizarBarraVida();
     void mostrarVictoria();
     void mostrarDerrota();
+    virtual void detenerNivel(); // se redefine en cada nivel
 
 signals:
     void nivelCompletado();

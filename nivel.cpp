@@ -73,12 +73,13 @@ void Nivel::actualizarBarraVida()
 void Nivel::mostrarVictoria()
 {
     if (widgetVida) widgetVida->hide();
+    if (barraProgreso) barraProgreso->hide();
 
     QPixmap imagenWin(":/imagenes/win.png");
     QPixmap escalada = imagenWin.scaled(1000, 700, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
     QGraphicsPixmapItem* cartelWin = new QGraphicsPixmapItem(escalada);
     cartelWin->setZValue(200);
+
     qreal centroX = (scene->width() - escalada.width()) / 2;
     qreal centroY = (scene->height() - escalada.height()) / 2;
     cartelWin->setPos(centroX, centroY);
@@ -86,10 +87,13 @@ void Nivel::mostrarVictoria()
 
     centerOn(centroX + escalada.width() / 2, centroY + escalada.height() / 2);
 
+    // 💥 NUEVO: detenemos el nivel antes de emitir la señal
     QTimer::singleShot(3000, this, [=]() {
-        emit nivelCompletado();
+        this->detenerNivel();           // ⛔ Detener timers, lógica, trampas...
+        emit nivelCompletado();        // ✅ Emitir señal solo cuando todo está quieto
     });
 }
+
 
 void Nivel::mostrarDerrota()
 {
@@ -98,9 +102,9 @@ void Nivel::mostrarDerrota()
 
     QPixmap imagenGameOver(":/imagenes/game_over.png");
     QPixmap escalada = imagenGameOver.scaled(1000, 800, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
     QGraphicsPixmapItem* cartel = new QGraphicsPixmapItem(escalada);
     cartel->setZValue(200);
+
     qreal centroX = (scene->width() - escalada.width()) / 2;
     qreal centroY = (scene->height() - escalada.height()) / 2;
     cartel->setPos(centroX, centroY);
@@ -109,6 +113,13 @@ void Nivel::mostrarDerrota()
     centerOn(centroX + escalada.width() / 2, centroY + escalada.height() / 2);
 
     QTimer::singleShot(3000, this, [=]() {
-        emit gokuMurio();
+        this->detenerNivel();     //  primero detener lógica activa
+        emit gokuMurio();         //  luego emitir señal
     });
+}
+
+
+void Nivel::detenerNivel()
+{
+    // Se implementa en hijos
 }
