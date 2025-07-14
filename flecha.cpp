@@ -41,8 +41,21 @@ void Flecha::actualizar()
 
     setPos(x, y);
 
-    if (x < -100 || x > 900) {
-        this->scene()->removeItem(this);
-        delete this;
+    if (pos().x() < 800) {
+        // Habitación 1
+        if (x < -100 || x > 900) {
+            if (scene()) {
+                scene()->removeItem(this);
+            }
+            delete this;
+        }
+    } else {
+        // Habitación 2
+        if (x < 700 || x > 1700) {
+            if (scene()) {
+                scene()->removeItem(this);
+            }
+            delete this;
+        }
     }
 }
