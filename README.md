@@ -88,3 +88,13 @@ Como el uso de memoria dinámica era obligatorio, todas las trampas, misiles y e
 
 ***Optimización visual y sonora:***
 Se incluyeron efectos de sonido (golpes, daño, fondo musical), y se revisó que no interfirieran con el rendimiento ni causaran retardos en la jugabilidad.
+
+---
+##  Conclusiones
+
+El desarrollo de este videojuego permitió aplicar de forma práctica los conceptos aprendidos durante el curso, especialmente la programación orientada a objetos, la gestión de memoria dinámica y el diseño de interfaces gráficas con Qt.
+
+A través de dos niveles diferenciados, se abordaron tres modelos físicos distintos, se organizaron las clases de forma modular, y se logró construir un videojuego jugable, entretenido y visualmente atractivo. El proyecto también representó un reto en cuanto a integración de animaciones, control de escenas y lógica de colisiones.
+
+En general, este trabajo refleja el esfuerzo, la creatividad y la evolución técnica alcanzada durante el semestre.
+
