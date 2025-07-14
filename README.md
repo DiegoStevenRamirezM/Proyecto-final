@@ -46,3 +46,10 @@ El diseño se centró en los siguientes objetivos:
 
 El desarrollo del videojuego fue orientado por principios de programación orientada a objetos, evitando duplicación de código y reutilizando clases mediante herencia (`Personaje`, `Trampa`, `Nivel`), lo cual permitió un diseño más limpio y modular.
 
+---
+## 🧩 Diagrama de Clases
+
+El siguiente diagrama representa la estructura general del videojuego, incluyendo la capa lógica (Personaje, Trampa, Nivel) y la capa gráfica (Nivel1View, Nivel2View, MainWindow). 
+
+![Diagrama de Clases](Diagrama%20de%20clases%20proyecto%20Final.png)
+
