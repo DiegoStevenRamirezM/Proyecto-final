@@ -53,3 +53,38 @@ El siguiente diagrama representa la estructura general del videojuego, incluyend
 
 ![Diagrama de Clases](Diagrama%20de%20clases%20proyecto%20Final.png)
 
+##  Cambios respecto a la propuesta inicial
+
+- Se mantuvo la idea original de dividir el juego en dos niveles: uno de exploración y otro de combate.
+- Se mejoró la física del misil implementando un movimiento parabólico más fluido.
+- Se simplificaron algunas relaciones en el diagrama de clases para mejorar la claridad del diseño (por ejemplo, la relación `Nivel` ↔ `Protagonista`).
+- Se integró un menú principal con `QStackedWidget` para mejorar la navegación entre niveles.
+- Se agregó un sistema de animaciones y efectos visuales para mejorar la experiencia del jugador.
+- Se crearon clases nuevas como TrampaFija, Nivel1View y Nivel2View
+- Se implemento una mejor idea en el 2 Nivel con varios golpes distintos y logica que no se pensó en el momento 1 y 2
+- Se mejoró la idea de la segunda habitacion del primer nivel
+- Se implementó un sistema de sonido de fondo y eventos .
+
+##  Desafíos que afronté durante el desarrollo
+Durante el desarrollo del videojuego, se presentaron diversos retos técnicos y de diseño que exigieron análisis, creatividad y solución de problemas. Algunos de los principales desafíos fueron:
+
+***Integración entre lógica y gráficos:***
+Fue un reto mantener separadas las responsabilidades de la lógica del juego (clases como Personaje, Trampa, Nivel) y los elementos visuales (QGraphicsView, QPixmap, QProgressBar, etc.) sin generar redundancia ni errores de acceso entre objetos.
+
+***Control del flujo entre escenas y niveles:***
+En un principio, al morir Goku o ganar el nivel, el juego se cerraba inesperadamente o se crasheaba. La solución fue implementar correctamente un sistema con QStackedWidget, y definir el método detenerNivel() en cada nivel para limpiar recursos antes de hacer la transición, aunque aun con todo eso hay ocasiones donde se crashea sinceramente.
+
+***Animaciones con sprites personalizados:***
+Ajustar los sprites (como la hoja de Goku) para que mantuvieran el mismo tamaño y posición en cada acción (caminar, atacar, morir) fue complejo. Tuve que replicar condiciones de escala y coordenadas exactas en cada animación para evitar parpadeos o saltos visuales.
+
+***Físicas programadas manualmente:***
+Las físicas no se basaron en motores externos. El movimiento parabólico de los misiles, la oscilación de flechas y la aceleración de la pared fueron modelados manualmente con fórmulas y timers, lo que implicó pruebas, cálculos y ajustes finos.
+
+***Control de colisiones y daño continuo:***
+Evitar que Goku recibiera daño múltiple en un solo frame fue clave. Se implementó un sistema de trampas en contacto usando QSet y un temporizador adicional para daño repetido, controlando además los efectos visuales y de sonido en cada caso.
+
+***Gestión de memoria dinámica sin errores:***
+Como el uso de memoria dinámica era obligatorio, todas las trampas, misiles y enemigos se crearon con new y se destruyeron manualmente. Se tuvo especial cuidado en evitar fugas de memoria  y referencias colgantes.
+
+***Optimización visual y sonora:***
+Se incluyeron efectos de sonido (golpes, daño, fondo musical), y se revisó que no interfirieran con el rendimiento ni causaran retardos en la jugabilidad.
