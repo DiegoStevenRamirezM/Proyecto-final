@@ -2,10 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPushButton>
+#include <QStackedWidget>
 #include <QWidget>
-#include <QLabel>
-#include <QVBoxLayout>
 #include "nivel1view.h"
 #include "nivel2view.h"
 
@@ -14,15 +12,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-public slots:
+private slots:
     void iniciarNivel1();
     void iniciarNivel2();
+    void volverAlMenu();
 
 private:
+    QStackedWidget *stackedWidget;
     QWidget *menuWidget;
+    Nivel1View *nivel1;
+    Nivel2View *nivel2;
 };
 
 #endif // MAINWINDOW_H
