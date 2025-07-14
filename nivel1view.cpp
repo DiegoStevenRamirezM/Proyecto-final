@@ -10,17 +10,18 @@ Nivel1View::Nivel1View(QWidget *parent) : Nivel(parent)
     trampasGeneradas = 0;
     habitacionDesbloqueada = false;
     paredCreada = false;
+    temporizadorTrampasExtra = nullptr;
 
+    // Crear barra de progreso
     barraProgreso = new QProgressBar(this);
     barraProgreso->setRange(0, 100);
     barraProgreso->setValue(0);
     barraProgreso->setGeometry(this->width() - 210, 10, 200, 20);
     barraProgreso->setTextVisible(true);
-    barraProgreso->setStyleSheet(
-        "QProgressBar { border: 2px solid black; border-radius: 5px; background-color: white; }"
-        "QProgressBar::chunk { background-color: green; }"
-        );
+    barraProgreso->setStyleSheet("QProgressBar { border: 2px solid black; border-radius: 5px; background-color: white; }"
+                                 "QProgressBar::chunk { background-color: green; }");
 
+    // Temporizadores
     verificadorSalida = new QTimer(this);
     connect(verificadorSalida, &QTimer::timeout, this, [=]() {
         if (habitacionDesbloqueada && goku->x() >= 800 && !paredCreada) {
@@ -33,7 +34,7 @@ Nivel1View::Nivel1View(QWidget *parent) : Nivel(parent)
 
     temporizadorTrampas = new QTimer(this);
     connect(temporizadorTrampas, &QTimer::timeout, this, &Nivel1View::generarTrampa);
-    temporizadorTrampas->start(2500);
+    temporizadorTrampas->start(4500);
 
     verificadorColisiones = new QTimer(this);
     connect(verificadorColisiones, &QTimer::timeout, this, &Nivel1View::verificarColisiones);
@@ -42,6 +43,7 @@ Nivel1View::Nivel1View(QWidget *parent) : Nivel(parent)
     setFocusPolicy(Qt::StrongFocus);
     setFocus(Qt::OtherFocusReason);
 }
+
 
 void Nivel1View::keyPressEvent(QKeyEvent *event)
 {
@@ -88,35 +90,45 @@ void Nivel1View::generarTrampa()
     int indice = QRandomGenerator::global()->bounded(0, 5);
     QString tipoAleatorio = tipos[indice];
 
+    //  Detectar si estamos en la habitación 2
+    bool enHabitacion2 = habitacionDesbloqueada && paredCreada;
+    int offsetX = enHabitacion2 ? 800 : 0;
+
     if (tipoAleatorio == "flecha") {
         bool haciaDerecha = QRandomGenerator::global()->bounded(0, 2);
         Flecha* f = new Flecha(haciaDerecha);
-        int x = haciaDerecha ? 0 : 800;
+        int x = haciaDerecha ? offsetX : offsetX + 800;
         f->setPos(x, 460);
         f->setZValue(1);
         scene->addItem(f);
     } else {
         TrampaFija* trampa = new TrampaFija(tipoAleatorio);
-        int x = QRandomGenerator::global()->bounded(100, 700);
+        int x = offsetX + QRandomGenerator::global()->bounded(100, 700);
         int y = (tipoAleatorio == "acido") ? 460 : 480;
         trampa->setPos(x, y);
         trampa->setZValue(1);
         scene->addItem(trampa);
         trampasActivas.append(trampa);
 
-        QTimer::singleShot(6000, [=]() {
+        QTimer::singleShot(3000, [=]() {
             trampasActivas.removeOne(trampa);
             trampasEnContacto.remove(trampa);
             trampa->detenerDanioContinuo();
-            scene->removeItem(trampa);
+
+            if (trampa->scene()) {
+                trampa->scene()->removeItem(trampa);
+            }
+
             delete trampa;
         });
+
+
 
         trampa->actualizar();
     }
 
     trampasGeneradas++;
-    int totalTrampasParaDesbloqueo = 30;
+    int totalTrampasParaDesbloqueo = 20;
     barraProgreso->setValue((trampasGeneradas * 100) / totalTrampasParaDesbloqueo);
 
     if (trampasGeneradas == totalTrampasParaDesbloqueo && !habitacionDesbloqueada) {
@@ -135,12 +147,13 @@ void Nivel1View::generarTrampa()
     }
 }
 
+
 void Nivel1View::iniciarDesafioPared()
 {
     pared = new Pared();
     scene->addItem(pared);
 
-    segundosRestantes = 60;
+    segundosRestantes = 40;  // Cambiado de 60 a 40
     contadorTiempo = new QGraphicsTextItem(QString::number(segundosRestantes));
     contadorTiempo->setDefaultTextColor(Qt::white);
     contadorTiempo->setFont(QFont("Arial", 24, QFont::Bold));
@@ -148,26 +161,51 @@ void Nivel1View::iniciarDesafioPared()
     contadorTiempo->setPos(1200, 15);
     scene->addItem(contadorTiempo);
 
+    // Temporizador del contador de segundos
     temporizadorResistencia = new QTimer(this);
     connect(temporizadorResistencia, &QTimer::timeout, this, [=]() mutable {
         segundosRestantes--;
         contadorTiempo->setPlainText(QString::number(segundosRestantes));
 
         if (segundosRestantes <= 0 && pared) {
-            scene->removeItem(pared);
-            delete pared;
-            pared = nullptr;
             temporizadorResistencia->stop();
 
-            scene->removeItem(contadorTiempo);
-            delete contadorTiempo;
+            if (temporizadorTrampasExtra) {
+                temporizadorTrampasExtra->stop();
+                temporizadorTrampasExtra->deleteLater();
+                temporizadorTrampasExtra = nullptr;
+            }
 
-            mostrarVictoria();
+            // Verificar que pared exista y esté en la escena antes de eliminarla
+            if (pared->scene()) {
+                scene->removeItem(pared);
+            }
+            delete pared;
+            pared = nullptr;
+
+            // Verificar que contadorTiempo esté en escena antes de eliminarlo
+            if (contadorTiempo && contadorTiempo->scene()) {
+                scene->removeItem(contadorTiempo);
+            }
+            delete contadorTiempo;
+            contadorTiempo = nullptr;
+
+            // Llamar a mostrarVictoria después de limpiar todo
+            QTimer::singleShot(100, this, [=]() {
+                mostrarVictoria();
+            });
         }
     });
+    temporizadorResistencia->start(1000);  // Cada 1 segundo
 
-    temporizadorResistencia->start(700);
+    // 👇 NUEVO: Generación de trampas normales durante esos 40 segundos
+    temporizadorTrampasExtra = new QTimer(this);
+    connect(temporizadorTrampasExtra, &QTimer::timeout, this, [=]() {
+        generarTrampa();  // Se reutiliza tu función existente
+    });
+    temporizadorTrampasExtra->start(1500);  // Cada 1.5 segundos
 }
+
 
 void Nivel1View::verificarColisiones()
 {
@@ -191,17 +229,32 @@ void Nivel1View::verificarColisiones()
                     if (goku->getVida() <= 0) {
                         for (Trampa* t : trampasEnContacto) {
                             t->detenerDanioContinuo();
-                            scene->removeItem(t);
+                            if (t->scene()) {
+                                t->scene()->removeItem(t);
+                            }
                             delete t;
                         }
+
                         trampasEnContacto.clear();
+
                         verificadorColisiones->stop();
                         temporizadorTrampas->stop();
 
+                        // 🟡 NUEVO: detener los temporizadores adicionales si existen
+                        if (temporizadorResistencia) {
+                            temporizadorResistencia->stop();
+                        }
+                        if (temporizadorTrampasExtra) {
+                            temporizadorTrampasExtra->stop();
+                            temporizadorTrampasExtra->deleteLater();
+                            temporizadorTrampasExtra = nullptr;
+                        }
+
                         goku->mostrarMuerte();
 
+
                         QTimer::singleShot(900, this, [=]() {
-                            mostrarDerrota();
+                            mostrarDerrota();  // ✅ Llamada directa
                         });
                     }
                 });
@@ -216,4 +269,12 @@ void Nivel1View::verificarColisiones()
     }
 
     trampasEnContacto = trampasActuales;
+}
+void Nivel1View::detenerNivel()
+{
+    if (verificadorSalida) verificadorSalida->stop();
+    if (temporizadorTrampas) temporizadorTrampas->stop();
+    if (temporizadorTrampasExtra) temporizadorTrampasExtra->stop();
+    if (verificadorColisiones) verificadorColisiones->stop();
+    if (temporizadorResistencia) temporizadorResistencia->stop();
 }
