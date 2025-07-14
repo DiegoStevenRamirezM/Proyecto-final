@@ -34,7 +34,7 @@ Nivel1View::Nivel1View(QWidget *parent) : Nivel(parent)
 
     temporizadorTrampas = new QTimer(this);
     connect(temporizadorTrampas, &QTimer::timeout, this, &Nivel1View::generarTrampa);
-    temporizadorTrampas->start(4500);
+    temporizadorTrampas->start(1000);
 
     verificadorColisiones = new QTimer(this);
     connect(verificadorColisiones, &QTimer::timeout, this, &Nivel1View::verificarColisiones);
@@ -198,7 +198,7 @@ void Nivel1View::iniciarDesafioPared()
     });
     temporizadorResistencia->start(1000);  // Cada 1 segundo
 
-    // 👇 NUEVO: Generación de trampas normales durante esos 40 segundos
+    // Generación de trampas normales durante esos 40 segundos
     temporizadorTrampasExtra = new QTimer(this);
     connect(temporizadorTrampasExtra, &QTimer::timeout, this, [=]() {
         generarTrampa();  // Se reutiliza tu función existente
@@ -240,7 +240,7 @@ void Nivel1View::verificarColisiones()
                         verificadorColisiones->stop();
                         temporizadorTrampas->stop();
 
-                        // 🟡 NUEVO: detener los temporizadores adicionales si existen
+                        //  NUEVO: detener los temporizadores adicionales si existen
                         if (temporizadorResistencia) {
                             temporizadorResistencia->stop();
                         }
@@ -254,7 +254,7 @@ void Nivel1View::verificarColisiones()
 
 
                         QTimer::singleShot(900, this, [=]() {
-                            mostrarDerrota();  // ✅ Llamada directa
+                            mostrarDerrota();  // Llamada directa
                         });
                     }
                 });

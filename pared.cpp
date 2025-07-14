@@ -31,7 +31,7 @@ void Pared::actualizar()
     setPos(x, y());
 
     // Si llega demasiado a la izquierda (fuera de escena), eliminarla
-    if (x < 800) {
+    if (x < 750) {
         if (scene()) {
             scene()->removeItem(this);
         }
