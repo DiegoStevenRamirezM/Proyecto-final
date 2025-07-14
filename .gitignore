@@ -1,0 +1,30 @@
+# Archivos de compilación
+build/
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.out
+Makefile
+*.pro.user
+*.qmake.stash
+*.qmake.cache
+*.autosave
+
+# Qt Creator y CMake
+CMakeLists.txt.user
+cmake-build-*/
+*.user
+*.user.*
+*.creator.*
+*.pro.user.*
+*.qmlproject.user
+*.qbs.user
+
+# Archivos temporales
+*~
+.DS_Store
+Thumbs.db

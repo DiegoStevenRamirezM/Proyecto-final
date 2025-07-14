@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imagenes/corazon.png</file>
+        <file>imagenes/Flecha_trampa.png</file>
+        <file>imagenes/Fondo_nivel1.png</file>
+        <file>imagenes/kamehameha1.png</file>
+        <file>imagenes/pared.png</file>
+        <file>imagenes/Sprites_Goku.png</file>
+        <file>imagenes/Trampas_fijas.png</file>
+        <file>imagenes/enemigo.png</file>
+        <file>imagenes/Fondo_menu.png</file>
+        <file>imagenes/Fondo_nivel2.png</file>
+        <file>imagenes/game_over.png</file>
+        <file>imagenes/misil.png</file>
+        <file>imagenes/win.png</file>
+        <file>sonidos/Golpe.wav</file>
+        <file>sonidos/musica_fondo.wav</file>
+        <file>sonidos/Salto.wav</file>
+        <file>sonidos/Dolor.wav</file>
+    </qresource>
+</RCC>
