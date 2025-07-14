@@ -4,6 +4,7 @@
 #include "nivel.h"
 #include "enemigo.h"
 #include <QProgressBar>
+#include <QTimer>
 
 class Nivel2View : public Nivel
 {
@@ -12,13 +13,15 @@ class Nivel2View : public Nivel
 public:
     explicit Nivel2View(QWidget *parent = nullptr);
     void actualizarBarraEnemigo();
+    void detenerNivel() override;  //importante para evitar crashes al volver al menú
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     Enemigo *pilaf;
     QProgressBar *barraEnemigo;
-
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    QTimer *temporizadorAtaque;
 };
 
 #endif // NIVEL2VIEW_H

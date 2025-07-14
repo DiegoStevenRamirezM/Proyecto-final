@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QTimer>
 
+
 Nivel2View::Nivel2View(QWidget *parent) : Nivel(parent)
 {
     // Fondo
@@ -13,7 +14,6 @@ Nivel2View::Nivel2View(QWidget *parent) : Nivel(parent)
     // Ajustar sprite de Goku
     goku->setScale(2);
     goku->setY(goku->y() - 110);
-
 
     // Crear a Pilaf
     pilaf = new Enemigo();
@@ -36,29 +36,28 @@ Nivel2View::Nivel2View(QWidget *parent) : Nivel(parent)
         );
     barraEnemigo->raise();
 
-    // Temporizador para ataque de Pilaf
-    QTimer* ataquePilaf = new QTimer(this);
-    connect(ataquePilaf, &QTimer::timeout, this, [=]() {
+    // Temporizador de ataque de Pilaf
+    temporizadorAtaque = new QTimer(this);
+    connect(temporizadorAtaque, &QTimer::timeout, this, [=]() {
         if (goku->getVida() <= 0) {
-            ataquePilaf->stop();
+            temporizadorAtaque->stop();
             goku->mostrarMuerte();
 
             QTimer::singleShot(800, this, [=]() {
                 mostrarDerrota();
             });
-            return; // evita que siga lanzando misiles
+            return;
         }
 
         if (!pilaf->estaMuerto()) {
             pilaf->lanzarMisiles(scene, goku);
         } else {
-            ataquePilaf->stop();
+            temporizadorAtaque->stop();
             mostrarVictoria();
         }
-
-
     });
-    ataquePilaf->start(5000);
+
+    temporizadorAtaque->start(5000);
 }
 
 void Nivel2View::keyPressEvent(QKeyEvent *event)
@@ -70,19 +69,15 @@ void Nivel2View::keyPressEvent(QKeyEvent *event)
         goku->curarse();
         actualizarBarraVida();
         break;
-
     case Qt::Key_F:
         goku->animarPunio();
         break;
-
     case Qt::Key_G:
         goku->animarPatada();
         break;
-
     case Qt::Key_H:
         goku->animarBolaEnergia();
         break;
-
     default:
         break;
     }
@@ -91,7 +86,17 @@ void Nivel2View::keyPressEvent(QKeyEvent *event)
 void Nivel2View::actualizarBarraEnemigo()
 {
     if (!pilaf) return;
+    barraEnemigo->setValue(pilaf->getVida());
+}
 
-    int vidaActual = pilaf->getVida();
-    barraEnemigo->setValue(vidaActual);
+void Nivel2View::detenerNivel()
+{
+    if (temporizadorAtaque) {
+        temporizadorAtaque->stop();
+    }
+
+    if (barraEnemigo) {
+        barraEnemigo->hide();
+    }
+
 }
