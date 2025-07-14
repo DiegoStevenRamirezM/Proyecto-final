@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QApplication>
 #include <QDebug>
+#include <QSoundEffect>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -52,6 +53,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(btnNivel1, &QPushButton::clicked, this, &MainWindow::iniciarNivel1);
     connect(btnNivel2, &QPushButton::clicked, this, &MainWindow::iniciarNivel2);
     connect(btnSalir, &QPushButton::clicked, this, &QApplication::quit);
+
+    // Música de fondo del menú
+    musicaMenu = new QSoundEffect(this);
+    musicaMenu->setSource(QUrl("qrc:/sonidos/musica_fondo.wav"));
+    musicaMenu->setLoopCount(QSoundEffect::Infinite);
+    musicaMenu->setVolume(0.4f);  // Puedes ajustar el volumen si es muy fuerte
+    musicaMenu->play();
 }
 
 MainWindow::~MainWindow()

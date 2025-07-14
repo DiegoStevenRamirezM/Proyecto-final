@@ -129,6 +129,9 @@ void Protagonista::moverIzquierda() {
 
 void Protagonista::saltar() {
     if (enElAire) return;
+
+     reproducirSonido("Salto.wav"); // 🎵 Sonido justo al iniciar salto
+
     estado = Saltando;
     frameActual = 0;
     enElAire = true;
@@ -370,6 +373,7 @@ void Protagonista::animarPunio()
 
             if (!golpeado && enemigoActual && this->collidesWithItem(enemigoActual)) {
                 enemigoActual->recibirDanio(2);
+                reproducirSonido("Golpe.wav");
                 golpeado = true;
             }
         } else {
@@ -421,8 +425,10 @@ void Protagonista::animarPatada()
 
             if (!golpeado && enemigoActual && this->collidesWithItem(enemigoActual)) {
                 enemigoActual->recibirDanio(3);
+                reproducirSonido("Golpe.wav");
                 golpeado = true;
             }
+
         } else {
             animador->stop();
             delete animador;

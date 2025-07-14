@@ -29,10 +29,10 @@ protected:
     int totalFrames;
     bool muerto;
 
-
-
     virtual void siguienteFrame() = 0;
     virtual void mostrarAnimacionDanio();
+    void reproducirSonido(const QString& ruta);
+
 };
 
 #endif // PERSONAJE_H

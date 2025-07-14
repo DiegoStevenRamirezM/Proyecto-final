@@ -6,6 +6,7 @@
 #include <QWidget>
 #include "nivel1view.h"
 #include "nivel2view.h"
+#include <QSoundEffect>
 
 class MainWindow : public QMainWindow
 {
@@ -25,6 +26,7 @@ private:
     QWidget *menuWidget;
     Nivel1View *nivel1;
     Nivel2View *nivel2;
+    QSoundEffect *musicaMenu;
 };
 
 #endif // MAINWINDOW_H
