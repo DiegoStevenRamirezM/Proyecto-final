@@ -23,6 +23,7 @@ public:
     void mostrarDerrota();
     virtual void detenerNivel(); // se redefine en cada nivel
 
+
 signals:
     void nivelCompletado();
     void gokuMurio();

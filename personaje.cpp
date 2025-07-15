@@ -29,7 +29,6 @@ int Personaje::getVida() const { return vida; }
 
 void Personaje::mostrarAnimacionDanio() {}
 
-#include <QSoundEffect>
 
 void Personaje::reproducirSonido(const QString& ruta) {
     QSoundEffect* efecto = new QSoundEffect(this);
